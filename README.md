@@ -15,7 +15,7 @@ Quite possibly the easiest and most beginner-friendly implementation out there.
 
 It is designed to be used with:
 
-- .NET 9 & .NET 8
+- .NET 10, .NET 9 & .NET 8
 - Minimal API
 - Azure Functions (HttpTrigger, ServiceBusTrigger and TimeTrigger)
 - Console app
