@@ -195,7 +195,12 @@ public static class WebApplicationExtensions
 
     private static IResult CreateResponse<TResponse>(IHandlerResponse<TResponse> response)
     {
-        return response.ToHttpResult();
+        if (response.IsFailure)
+        {
+            return response.ToHttpResult();
+        }
+
+        return Results.Ok(response.Payload);
     }
 
     private static IResult CreateNoContentResponse(IHandlerResponse response)

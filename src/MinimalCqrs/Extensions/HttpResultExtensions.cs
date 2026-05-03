@@ -15,9 +15,6 @@ public static class HttpResultExtensions
             BadRequestResponse badRequest
                 => Results.BadRequest(badRequest.Message),
 
-            SuccessResponse
-                => Results.Ok(),
-
             _ => throw new InvalidOperationException($"Unsupported response type: {response.GetType().Name}")
         };
     }
