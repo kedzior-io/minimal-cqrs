@@ -1,4 +1,6 @@
-﻿namespace MinimalCqrs;
+﻿using MinimalCqrs.Handlers.Responses;
+
+namespace MinimalCqrs;
 
 public abstract class Handler<TMessage, TResponse> : IHandler<TMessage, IHandlerResponse<TResponse>> where TMessage : IHandlerMessage<IHandlerResponse<TResponse>>
 {
@@ -10,12 +12,17 @@ public abstract class Handler<TMessage, TResponse> : IHandler<TMessage, IHandler
 
     protected IHandlerResponse<TResponse> Success(TResponse response)
     {
-        return HandlerResponse<TResponse>.CreateSuccess(response);
+        return SuccessResponse<TResponse>.CreateSuccess(response);
     }
 
     protected IHandlerResponse<TResponse> Error(string message)
     {
-        return HandlerResponse<TResponse>.CreateError(message);
+        return BadRequestResponse<TResponse>.CreateError(message);
+    }
+
+    protected IHandlerResponse<TResponse> Unauthorized()
+    {
+        return UnauthorizedResponse<TResponse>.CreateUnauthorized();
     }
 }
 
@@ -29,12 +36,17 @@ public abstract class Handler<TMessage> : IHandler<TMessage, IHandlerResponse> w
 
     protected IHandlerResponse Success()
     {
-        return HandlerResponse.CreateEmpty();
+        return SuccessResponse.CreateEmpty();
     }
 
     protected IHandlerResponse Error(string message)
     {
-        return HandlerResponse.CreateError(message);
+        return BadRequestResponse.CreateError(message);
+    }
+
+    protected IHandlerResponse Unauthorized(string message)
+    {
+        return UnauthorizedResponse.CreateUnauthorized();
     }
 }
 

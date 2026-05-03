@@ -195,16 +195,7 @@ public static class WebApplicationExtensions
 
     private static IResult CreateResponse<TResponse>(IHandlerResponse<TResponse> response)
     {
-        if (response.IsFailure)
-        {
-            return Results.ValidationProblem(
-                title: response.Message,
-                errors: new Dictionary<string, string[]>(),
-                statusCode: (int)HttpStatusCode.BadRequest
-            );
-        }
-
-        return Results.Ok(response.Payload);
+        return response.ToHttpResult();
     }
 
     private static IResult CreateNoContentResponse(IHandlerResponse response)
