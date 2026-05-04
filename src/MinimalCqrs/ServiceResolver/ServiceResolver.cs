@@ -31,10 +31,14 @@ internal sealed class ServiceResolver : IServiceResolver
         => _singletonCache.GetOrAdd(type, ActivatorUtilities.GetServiceOrCreateInstance(_rootServiceProvider, type));
 
     public IServiceScope CreateScope()
-        => _isUnitTestMode
-               ? _ctxAccessor.HttpContext?.RequestServices.CreateScope() ??
-                 throw new InvalidOperationException("Please follow documentation to configure unit test environment properly!")
-               : _rootServiceProvider.CreateScope();
+    {
+        if (_isUnitTestMode)
+            return _ctxAccessor.HttpContext?.RequestServices.CreateScope() ??
+                   throw new InvalidOperationException("Please follow documentation to configure unit test environment properly!");
+
+        return _ctxAccessor?.HttpContext?.RequestServices.CreateScope()
+               ?? _rootServiceProvider.CreateScope();
+    }
 
     public TService Resolve<TService>() where TService : class
         => _ctxAccessor.HttpContext?.RequestServices.GetRequiredService<TService>() ??
