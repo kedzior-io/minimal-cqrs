@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+<meta charset='utf-8' />
+<title>MinimalCqrs.Benchmarks.HttpThroughputBenchmarks-20260505-190415</title>
+
+<style type="text/css">
+	table { border-collapse: collapse; display: block; width: 100%; overflow: auto; }
+	td, th { padding: 6px 13px; border: 1px solid #ddd; text-align: right; }
+	tr { background-color: #fff; border-top: 1px solid #ccc; }
+	tr:nth-child(even) { background: #f8f8f8; }
+</style>
+</head>
+<body>
+<pre><code>
+BenchmarkDotNet v0.14.0, Windows 11 (10.0.26200.8246)
+Unknown processor
+.NET SDK 10.0.201
+  [Host]     : .NET 10.0.5 (10.0.526.15411), X64 RyuJIT AVX2
+  DefaultJob : .NET 10.0.5 (10.0.526.15411), X64 RyuJIT AVX2
+</code></pre>
+<pre><code></code></pre>
+
+<table>
+<thead><tr><th>Method                </th><th>Mean</th><th>Error</th><th>StdDev</th><th>Median</th><th>Ratio</th><th>RatioSD</th><th>Gen0</th><th>Allocated</th><th>Alloc Ratio</th>
+</tr>
+</thead><tbody><tr><td>&#39;Vanilla Minimal API — GET&#39;</td><td>5.649 &mu;s</td><td>0.1112 &mu;s</td><td>0.1559 &mu;s</td><td>5.605 &mu;s</td><td>1.00</td><td>0.04</td><td>0.4883</td><td>8.23 KB</td><td>1.00</td>
+</tr><tr><td>&#39;MinimalCqrs — GET&#39;</td><td>5.943 &mu;s</td><td>0.1146 &mu;s</td><td>0.1126 &mu;s</td><td>5.942 &mu;s</td><td>1.05</td><td>0.03</td><td>0.4883</td><td>8.61 KB</td><td>1.05</td>
+</tr><tr><td>&#39;Vanilla Minimal API — POST&#39;</td><td>12.656 &mu;s</td><td>0.6015 &mu;s</td><td>1.7546 &mu;s</td><td>12.136 &mu;s</td><td>2.24</td><td>0.32</td><td>0.6104</td><td>10.97 KB</td><td>1.33</td>
+</tr><tr><td>&#39;MinimalCqrs — POST&#39;</td><td>31.139 &mu;s</td><td>1.3055 &mu;s</td><td>3.6822 &mu;s</td><td>30.564 &mu;s</td><td>5.52</td><td>0.67</td><td>0.4883</td><td>11.34 KB</td><td>1.38</td>
+</tr></tbody></table>
+</body>
+</html>

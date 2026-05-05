@@ -6,9 +6,11 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageVersion>5.0.0</PackageVersion>
+    <PackageVersion>6.0.0</PackageVersion>
     <Authors>Artur Kedzior</Authors>
-    <PackageDescription>Minimal CQRS is a clean, modern implementation of CQRS (Command Query Responsibility Segregation) and Vertical Slice Architecture for .NET. It’s designed to simplify application development with minimal boilerplate and clear, consistent patterns.</PackageDescription>
+    <PackageDescription>Minimal CQRS is a clean, modern implementation of CQRS (Command Query
+      Responsibility Segregation) and Vertical Slice Architecture for .NET. It's designed to
+      simplify application development with minimal boilerplate and clear, consistent patterns.</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
@@ -19,6 +21,7 @@
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Microsoft.Azure.Functions.Worker" Version="2.51.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.2" />
-    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.2" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions"
+      Version="10.0.2" />
   </ItemGroup>
 </Project>

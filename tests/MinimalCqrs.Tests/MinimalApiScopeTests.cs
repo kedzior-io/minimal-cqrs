@@ -5,38 +5,35 @@ using Xunit;
 namespace MinimalCqrs.Tests;
 
 /// <summary>
-/// Verifies that handler execution works correctly in an ASP.NET Core Minimal API context
+/// Verifies handler execution behaviour in an ASP.NET Core Minimal API context
 /// (IHttpContextAccessor.HttpContext is set with a per-request RequestServices scope).
 ///
-/// HttpContextAccessor stores the context in a static AsyncLocal, so all instances —
-/// including the one inside ServiceResolver's inner service provider — share the same value.
+/// In the ASP.NET Core path, CreateScope() returns a non-disposing wrapper around
+/// HttpContext.RequestServices rather than allocating a child scope. This avoids the
+/// per-invocation scope creation overhead while still correctly cleaning up:
+///   - Transient+IDisposable services are tracked by the REQUEST scope
+///   - They are disposed when the request scope is disposed (request end), not per-invocation
 ///
-/// Expected behavior after the scope fix:
-///   - CreateScope() uses HttpContext.RequestServices.CreateScope() (child of request scope)
-///   - Handler's Transient+IDisposable dependencies are disposed when the child scope exits
-///   - This happens per-invocation, before the request scope itself is disposed
+/// For Azure Functions / Console App (no HTTP context) see ScopeLeakTests.cs, where
+/// a real scope IS created and disposed after each invocation.
 /// </summary>
 public class MinimalApiScopeTests
 {
     [Fact]
-    public async Task Transient_IDisposable_dependency_is_disposed_after_each_invocation_with_http_context()
+    public async Task Transient_IDisposable_dependency_is_disposed_when_request_scope_ends()
     {
-        // Simulates ASP.NET Core Minimal API — IHttpContextAccessor.HttpContext is populated.
         MinimalApiTrackableDisposable.Reset();
 
         var services = new ServiceCollection();
         services.AddTransient<MinimalApiTrackableDisposable>();
         services.AddMinimalCqrsFromAssemblyContaining<MinimalApiTestHandlers.Query>();
 
-        // Build an outer SP to own the request scope and the IHttpContextAccessor.
-        // HttpContextAccessor uses a static AsyncLocal, so the inner SP's accessor
-        // (inside ServiceResolver) will see whatever we set here.
         var appSp = services.BuildServiceProvider();
         var httpContextAccessor = appSp.GetRequiredService<IHttpContextAccessor>();
 
         const int invocations = 5;
 
-        using var requestScope = appSp.CreateScope();
+        var requestScope = appSp.CreateScope();
 
         try
         {
@@ -48,21 +45,22 @@ public class MinimalApiScopeTests
             for (var i = 0; i < invocations; i++)
             {
                 await HandlerExtensions.ExecuteAsync(new MinimalApiTestHandlers.Query(), CancellationToken.None);
-
-                // After the fix: each invocation's child scope is disposed immediately,
-                // so DisposedCount increments after every call.
-                // Before the fix: instances are held by the request scope and DisposedCount stays 0
-                // until requestScope.Dispose() is called at the end.
-                Assert.Equal(i + 1, MinimalApiTrackableDisposable.DisposedCount);
             }
 
             Assert.Equal(invocations, MinimalApiTrackableDisposable.CreatedCount);
-            Assert.Equal(invocations, MinimalApiTrackableDisposable.DisposedCount);
+
+            // In the ASP.NET Core path, CreateScope() wraps the request scope without creating
+            // a child scope. Disposables are held by the request scope — not yet disposed here.
+            Assert.Equal(0, MinimalApiTrackableDisposable.DisposedCount);
         }
         finally
         {
             httpContextAccessor.HttpContext = null;
+            requestScope.Dispose(); // simulates end of HTTP request
         }
+
+        // Request scope ended — all tracked disposables are now cleaned up.
+        Assert.Equal(invocations, MinimalApiTrackableDisposable.DisposedCount);
     }
 }
 
@@ -88,12 +86,8 @@ public static class MinimalApiTestHandlers
 
     public sealed record Response;
 
-    public sealed class Handler : MessageHandler<Query, Response>
+    public sealed class Handler(MinimalApiTrackableDisposable _) : MessageHandler<Query, Response>
     {
-        private readonly MinimalApiTrackableDisposable _disposable;
-
-        public Handler(MinimalApiTrackableDisposable disposable) => _disposable = disposable;
-
         public override Task<Response> ExecuteAsync(Query query, CancellationToken ct = default)
             => Task.FromResult(new Response());
     }
