@@ -200,3 +200,9 @@ src/Fiz.Api/Endpoints/Test/
 **/.DS_Store
 
 *.db
+
+# BenchmarkDotNet output
+BenchmarkDotNet.Artifacts/
+
+# Claude Code
+.claude/
