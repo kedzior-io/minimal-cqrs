@@ -202,7 +202,7 @@ src/Fiz.Api/Endpoints/Test/
 *.db
 
 # BenchmarkDotNet output
-BenchmarkDotNet.Artifacts/
+benchmarks/BenchmarkDotNet.Artifacts/
 
 # Claude Code
 .claude/
