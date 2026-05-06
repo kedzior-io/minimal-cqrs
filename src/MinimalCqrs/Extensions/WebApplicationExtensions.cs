@@ -197,11 +197,7 @@ public static class WebApplicationExtensions
     {
         if (response.IsFailure)
         {
-            return Results.ValidationProblem(
-                title: response.Message,
-                errors: new Dictionary<string, string[]>(),
-                statusCode: (int)HttpStatusCode.BadRequest
-            );
+            return response.ToHttpResult();
         }
 
         return Results.Ok(response.Payload);
