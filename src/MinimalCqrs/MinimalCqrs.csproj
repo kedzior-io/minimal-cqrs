@@ -13,6 +13,11 @@
       simplify application development with minimal boilerplate and clear, consistent patterns.</PackageDescription>
   </PropertyGroup>
   <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>MinimalCqrs.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <None Include="..\..\README.md">
       <Pack>True</Pack>

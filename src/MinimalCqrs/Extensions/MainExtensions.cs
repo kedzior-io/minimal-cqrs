@@ -21,7 +21,7 @@ public static class MainExtensions
      * so GetTypes() is never called on framework/tooling assemblies that may not
      * be fully loadable (e.g. EF Design tools, test hosts, dynamic proxies).
     */
-    private static readonly string[] _assemblyExclusions =
+    internal static readonly string[] _assemblyExclusions =
     [
         "Accessibility", "FluentValidation", "Grpc", "JetBrains",
         "Microsoft", "mscorlib", "netstandard", "Newtonsoft",
