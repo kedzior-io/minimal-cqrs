@@ -1,4 +1,4 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System.Reflection;
 
@@ -16,6 +16,19 @@ public static class MainExtensions
         return RegisterMinimalCqrs(services);
     }
 
+    /* 
+     * Assemblies with these name prefixes are never user code, we want to skip them entirely
+     * so GetTypes() is never called on framework/tooling assemblies that may not
+     * be fully loadable (e.g. EF Design tools, test hosts, dynamic proxies).
+    */
+    private static readonly string[] _assemblyExclusions =
+    [
+        "Accessibility", "FluentValidation", "Grpc", "JetBrains",
+        "Microsoft", "mscorlib", "netstandard", "Newtonsoft",
+        "NuGet", "PresentationCore", "PresentationFramework",
+        "StackExchange", "System", "testhost", "WindowsBase"
+    ];
+
     private static IServiceCollection RegisterMinimalCqrs(this IServiceCollection services, Assembly? assembly = null)
     {
         var handlerRegistry = new HandlerRegistry();
@@ -26,9 +39,8 @@ public static class MainExtensions
         services.AddSingleton(validatorRegistry);
         services.TryAddSingleton<IServiceResolver, ServiceResolver>();
 
-        var allAssemblies = Enumerable.Empty<Assembly>();
-
-        allAssemblies = allAssemblies.Union(AppDomain.CurrentDomain.GetAssemblies());
+        var allAssemblies = AppDomain.CurrentDomain.GetAssemblies()
+            .Where(a => !a.IsDynamic && !_assemblyExclusions.Any(prefix => a.FullName!.StartsWith(prefix)));
 
         if (assembly is not null)
         {
@@ -41,14 +53,13 @@ public static class MainExtensions
                                     t =>
                                     t is { IsAbstract: false, IsInterface: false, IsGenericType: false } &&
                                     t.GetInterfaces().Intersect(
-                                        new[]
-                                        {
+                                        [
                                             Types.IQuery,
                                             Types.ICommand,
                                             Types.IEvent,
                                             Types.IMessageHandler,
                                             Types.IValidator
-                                        }).Any()
+                                        ]).Any()
                                 )
                                 );
 

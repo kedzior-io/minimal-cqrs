@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageVersion>6.0.0</PackageVersion>
+    <PackageVersion>6.0.1</PackageVersion>
     <Authors>Artur Kedzior</Authors>
     <PackageDescription>Minimal CQRS is a clean, modern implementation of CQRS (Command Query
       Responsibility Segregation) and Vertical Slice Architecture for .NET. It's designed to
