@@ -217,6 +217,19 @@ I decided to borrow the best features from existing frameworks to create an in-p
 It can be seen in production here: [https://shipdotnet.com](https://shipdotnet.com)
 
 
+## Benchmarks
+
+Measured against a vanilla ASP.NET Core Minimal API using [BenchmarkDotNet](https://benchmarkdotnet.org/) over a full HTTP round-trip via `TestServer`.
+
+| Method | Mean | Ratio | Allocated | Alloc Ratio |
+|---|--:|--:|--:|--:|
+| GET: Vanilla Minimal API | 5.82 μs | 1.00 | 8.23 KB | 1.00 |
+| GET: MinimalCqrs | 6.18 μs | 1.06 | 8.61 KB | 1.05 |
+| POST: Vanilla Minimal API | 22.80 μs | 3.92 | 10.99 KB | 1.34 |
+| POST: MinimalCqrs | 25.42 μs | 4.37 | 11.34 KB | 1.38 |
+
+**~6% overhead on GET, ~11% on POST** - effectively at parity with raw Minimal API.
+
 ## Todo
 
 There are few things to work out here and mainly:
@@ -225,7 +238,6 @@ There are few things to work out here and mainly:
 - MVC example
 - Unit test example
 - Integration test example
-- Benchmarks
 
 ## Contributing
 

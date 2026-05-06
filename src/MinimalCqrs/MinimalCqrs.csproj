@@ -6,12 +6,17 @@
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageVersion>6.0.0</PackageVersion>
+    <PackageVersion>6.0.1</PackageVersion>
     <Authors>Artur Kedzior</Authors>
     <PackageDescription>Minimal CQRS is a clean, modern implementation of CQRS (Command Query
       Responsibility Segregation) and Vertical Slice Architecture for .NET. It's designed to
       simplify application development with minimal boilerplate and clear, consistent patterns.</PackageDescription>
   </PropertyGroup>
+  <ItemGroup>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>MinimalCqrs.Tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
   <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
     <None Include="..\..\README.md">
