@@ -4,8 +4,6 @@ namespace MinimalCqrs;
 
 internal static class ValidationExtensions
 {
-    private static IValidator? _validator = null;
-
     public static async Task<IDictionary<string, string[]>?> ExecuteValidationAsync<TResponse>(IHandlerMessage<TResponse> message)
     {
         var messageType = message.GetType();
@@ -30,8 +28,5 @@ internal static class ValidationExtensions
     }
 
     private static IValidator GetValidator(Type validatorType)
-    {
-        _validator = (IValidator)Conf.ServiceResolver.CreateSingleton(validatorType);
-        return _validator;
-    }
+        => (IValidator)Conf.ServiceResolver.CreateSingleton(validatorType);
 }
